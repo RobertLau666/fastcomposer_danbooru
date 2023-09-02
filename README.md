@@ -1,11 +1,15 @@
 该项目基于[FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention](https://github.com/mit-han-lab/fastcomposer)，训练采用danbooru数据，经过blip2提取图片的prompt
 
 ## 准备数据
-1. 先运行generate_blip2_captions_danbooru_.py，生成captions（用55 node2 tmux4）
-2. 再运行file_process_.ipynb的“instantbooth/data_336k_pre数据处理（for release）”的“生成xxxxxxx_blip2_captions.json文件”
+1. 准备存放数据的文件夹“train_fastcomposer_data_336k_pre_release_danbooru_”，存放数据格式如下：
+train_fastcomposer_data_336k_pre_release_danbooru_
+  00000
+  image_ids_train.txt
+2. 运行generate_blip2_captions_danbooru_.py，生成的blip2_captions_danbooru_336k_.json在第三步被使用
+3. 运行file_process_.ipynb的“instantbooth/data_336k_pre数据处理（for release）”的“生成xxxxxxx_blip2_captions.json文件”
 
 ## 修改
-修改run_training.sh（相比于第一次训练的run_training.sh）
+1. 修改run_training.sh（相比于第一次训练的run_training.sh）
 变慢后，若中断，只需按一次Ctrl+C，静等停止，上拉框'resource_tracker: There appear to be %d '消失，wandb的绿点消失，等2h信号量释放？再重训就好（跟调整bsz、main_process_port大小没关系），一旦正常速度训练时，除了关闭两个终端，不要改变default_config.yaml（其他测试额外指定一个second_config.yaml文件就行了）和项目代码，包括不用删除wandb无关进程，否则会变卡住
 其实也许没那么多道道，就是需要冷却？多试几次就好了
 去掉该参数--main_process_port 11185 \ 就好了（或与参数无关）
@@ -15,13 +19,13 @@
 --output_dir models_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
 --train_batch_size 12 \
 --keep_interval 5000 \ #10000 每隔5k step保存一次
-修改data.py
+2. 修改data.py
 两处##".json"改为"_blip2_captions.json"
 
 ## 训练
 bash scripts/run_training.sh
 
-## 测试（用55 node2 tmux3，测试完显示完）
+## 测试
 修改scripts/run_inference_batch.sh（相比于第一次训练的run_inference_batch.sh）
 三个变量
 97下，移动ckpt到oss下：
@@ -30,13 +34,8 @@ cp -r /ckpt_saved/models_blip2_captions/anything-v3.0/danbooru/postfuse-localize
 图像参数
 bash scripts/run_inference_batch.sh
 
-## 显示（用84）：
-fastcomposer/show_ckpt_img_.ipynb
-
-## 备份
-97的/ckpt_saved文件夹下备份了115000
-nas的fastcomposer_release_danbooru/fastcomposer-main项目下备份了5000-115000
-oss的fastcomposer_release_danbooru/fastcomposer-main项目下备份了5000-115000
+## 显示
+运行show_ckpt_img_.ipynb
 
 ## +ControlNet
 修改utils.py:
@@ -53,7 +52,7 @@ run_inference_batch.sh复制为run_inference_batch_controlnet.sh
 改为fastcomposer/inference_controlnet.py \
 bash run_inference_batch_controlnet.sh
 
-## 显示（用84）：
+## 显示
 fastcomposer/show_ckpt_img_.ipynb
 
 
@@ -136,5 +135,3 @@ If you find FastComposer useful or relevant to your research, please kindly cite
             year={2023}
           }
 ```
-
-
