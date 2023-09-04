@@ -1,3 +1,61 @@
+该项目基于[FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention](https://github.com/mit-han-lab/fastcomposer)，训练采用danbooru数据，经过blip2提取图片的prompt
+
+## 准备数据
+1. 准备存放数据的文件夹“train_fastcomposer_data_336k_pre_release_danbooru_”，存放数据格式如下：
+train_fastcomposer_data_336k_pre_release_danbooru_
+  00000
+  image_ids_train.txt
+2. 运行generate_blip2_captions_danbooru_.py，生成的blip2_captions_danbooru_336k_.json在第三步被使用
+3. 运行file_process_.ipynb的“instantbooth/data_336k_pre数据处理（for release）”的“生成xxxxxxx_blip2_captions.json文件”
+
+## 修改
+1. 修改run_training.sh（相比于第一次训练的run_training.sh）
+变慢后，若中断，只需按一次Ctrl+C，静等停止，上拉框'resource_tracker: There appear to be %d '消失，wandb的绿点消失，等2h信号量释放？再重训就好（跟调整bsz、main_process_port大小没关系），一旦正常速度训练时，除了关闭两个终端，不要改变default_config.yaml（其他测试额外指定一个second_config.yaml文件就行了）和项目代码，包括不用删除wandb无关进程，否则会变卡住
+其实也许没那么多道道，就是需要冷却？多试几次就好了
+去掉该参数--main_process_port 11185 \ 就好了（或与参数无关）
+不同训练版本要更换此参数值，大一些（如11195），否则主进程会在不同卡之间切换，耗时，会在每隔20-40steps变慢；
+网上说调小bsz，尝试10->5，然后静等走step（尽管很慢），然后Ctrl+C，再调成10，就好了https://stackoverflow.com/questions/64515797/there-appear-to-be-6-leaked-semaphore-objects-to-clean-up-at-shutdown-warnings-w
+--logging_dir logs_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
+--output_dir models_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
+--train_batch_size 12 \
+--keep_interval 5000 \ #10000 每隔5k step保存一次
+2. 修改data.py
+两处##".json"改为"_blip2_captions.json"
+
+## 训练
+bash scripts/run_training.sh
+
+## 测试
+修改scripts/run_inference_batch.sh（相比于第一次训练的run_inference_batch.sh）
+三个变量
+97下，移动ckpt到oss下：
+cp -r /ckpt_saved/models_blip2_captions/anything-v3.0/danbooru/postfuse-localize-danbooru-1_5-1e-5/checkpoint-220000 /oss/comicai/chenyu.liu/fastcomposer_release_danbooru/fastcomposer-main/models_blip2_captions/anything-v3.0/danbooru/postfuse-localize-danbooru-1_5-1e-5
+--finetuned_model_path /nas40/chenyu.liu/fastcomposer_release_danbooru/fastcomposer-main/models_blip2_captions/anything-v3.0/danbooru/postfuse-localize-danbooru-1_5-1e-5/checkpoint-${CKPT} \
+图像参数
+bash scripts/run_inference_batch.sh
+
+## 显示
+运行show_ckpt_img_.ipynb
+
+## +ControlNet
+修改utils.py:
+##添加参数--pose_image_path
+inference_controlnet.py:
+inference.py复制为inference_controlnet.py
+    添加image = load_image(
+        # '/nas40/chenyu.liu/Tests_/pose.png'
+        args.pose_image_path
+    )
+run_inference_batch_controlnet.sh:
+run_inference_batch.sh复制为run_inference_batch_controlnet.sh
+添加POSES相关
+改为fastcomposer/inference_controlnet.py \
+bash run_inference_batch_controlnet.sh
+
+## 显示
+fastcomposer/show_ckpt_img_.ipynb
+
+
 # FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention [[website](https://fastcomposer.mit.edu/)] [[demo](https://fastcomposer.hanlab.ai)][[replicate api](https://replicate.com/cjwbw/fastcomposer)]
 
 ![multi-subject](figures/multi-subject.png)
