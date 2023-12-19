@@ -50,7 +50,7 @@ Run fastcomposer/show_ckpt_img_.ipynb
           # '/nas40/chenyu.liu/Tests_/pose.png'
           args.pose_image_path
       )
-  ```
+    ```
 3. Revise "run_inference_batch_controlnet.sh":
 
     a. Copy "run_inference_batch.sh" to "run_inference_batch_controlnet.sh"
