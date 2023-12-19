@@ -3,9 +3,9 @@ The project is based on [FastComposer: Tuning-Free Multi-Subject Image Generatio
 ## Preparing Database
 1. Prepare a folder "train_fastcomposer_data_336k_pre_release_danbooru_" for storing data, the data storage format is as follows:
 ```
-train_fastcomposer_data_336k_pre_release_danbooru_/
-  00000/
-  image_ids_train.txt
+| train_fastcomposer_data_336k_pre_release_danbooru_/
+|---- 00000/
+|---- image_ids_train.txt
 ```
 2. Run generate_blip2_captions_danbooru_.py, the generated file "blip2_captions_danbooru_336k_.json" is used in step 3.
 3. Run file_process_.ipynb的"instantbooth/data_336k_pre数据处理（for release）"的"生成xxxxxxx_blip2_captions.json文件"
