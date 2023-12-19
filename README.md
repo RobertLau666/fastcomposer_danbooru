@@ -57,7 +57,7 @@ Run fastcomposer/show_ckpt_img_.ipynb
 
     b. Add the parameters associated with "POSES"
 
-    c. Revise "fastcomposer/inference_controlnet.py \"
+    c. Revise "fastcomposer/inference_controlnet.py \\"
 ```
 bash run_inference_batch_controlnet.sh
 ```
