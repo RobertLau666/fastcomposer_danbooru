@@ -1,5 +1,16 @@
 The project is based on [FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention](https://github.com/mit-han-lab/fastcomposer), training dataset use MGC dataset, prompt use the prompt generated from the MGC dataset detected by BLIP2 model
 
+## Environment Setup
+```
+conda create -n fastcomposer python
+conda activate fastcomposer
+pip install torch torchvision torchaudio
+pip install transformers==4.25.1 accelerate datasets evaluate diffusers==0.16.1 xformers triton scipy clip gradio facenet-pytorch
+
+python setup.py install
+```
+You can also refer to the file 'fastcomposer_requirements.txt', which is the version of the package we can run in our environment.
+
 ## Preparing Database
 1. Prepare a folder "MGC" in any path for storing data, the data storage format is as follows:
 ```
@@ -48,7 +59,7 @@ bash scripts/run_inference_batch.sh
 ```
 
 ## Show
-Run "Test for "DEMO_NAME CKPT CAPTION"" in fastcomposer/show_ckpt_img_.ipynb
+Run "Test for "DEMO_NAME CKPT CAPTION" in fastcomposer/show_ckpt_img_.ipynb
 
 ## + ControlNet
 1. Revise utils.py: 
@@ -79,3 +90,21 @@ bash run_inference_batch_controlnet.sh
 
 ## Show
 Run "Test for "DEMO_NAME CKPT CAPTION POSE" in fastcomposer/show_ckpt_img_.ipynb
+
+## CKPT
+Before this, we also followed the above process to train the 336k danbooru dataset, and finally got a good ckpt, you can download it [here]().
+
+### Result display:
+
+Number of train images: 336k
+
+
+
+Train the number of passes of the images: 52.36
+
+prompt: "a GENDER <|image|> is reading book"
+| input_image | output_images (ckpt: 220k) | output_images (ckpt: 115k) ![2](pose/pose_512_768/001_stand/pose.png) | 
+| ------- | ------- | ------- | 
+| ![Nahida](data/Nahida/Nahida/0.png)   | ![2](figures/result_images/0_result_image.png)   | ![2](figures/result_images/Nahida_controlnet_pose_stand.png)   | 
+| ![6002903](data/6002903/6002903/0.png)   | ![4](figures/result_images/1_result_image.png)   | ![4](figures/result_images/6002903_controlnet_pose_stand.png)   |
+| ![Elsa](data/Elsa/Elsa/0.png)       | ![6](figures/result_images/2_result_image.png)   | ![6](figures/result_images/Elsa_controlnet_pose_stand.png)   |
