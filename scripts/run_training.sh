@@ -1,30 +1,30 @@
 export WANDB_NAME=postfuse-localize-danbooru-1_5-1e-5
 export WANDB_DISABLE_SERVICE=true
-export CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7"
+export CUDA_VISIBLE_DEVICES="0,1,2,3"
 
-DATASET_PATH="/oss/comicai/chenyu.liu/Datasets/train_fastcomposer_data_336k_pre_release_danbooru_"
+DATASET_PATH="/dfs/comicai/chenyu.liu/Datasets/MGC"
 
-DATASET_NAME="danbooru"
-FAMILY="/oss/comicai/chenyu.liu/Models"
-MODEL="anything-v3.0"
+DATASET_NAME="MGC"
+FAMILY="/dfs/comicai/chenyu.liu/Models"
+MODEL="Linaqruf_anything-v3.0"
 IMAGE_ENCODER=openai/clip-vit-large-patch14
 
 accelerate launch \
-    --config_file /oss/comicai/chenyu.liu/cache/huggingface/accelerate/default_config.yaml \
+    --config_file /dfs/comicai/chenyu.liu/cache/huggingface/accelerate/default_config.yaml \
     --mixed_precision=bf16 \
     --machine_rank 0 \
     --num_machines 1 \
     --main_process_port 11185 \
-    --num_processes 8 \
+    --num_processes 4 \
     --multi_gpu \
     fastcomposer/train.py \
     --pretrained_model_name_or_path ${FAMILY}/${MODEL} \
     --dataset_name ${DATASET_PATH} \
-    --logging_dir /ckpt_saved/logs_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
-    --output_dir /ckpt_saved/models_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
+    --logging_dir logs_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
+    --output_dir models_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
     --max_train_steps 1000000 \
     --num_train_epochs 150000 \
-    --train_batch_size 10 \
+    --train_batch_size 12 \
     --learning_rate 1e-5 \
     --unet_lr_scale 1.0 \
     --checkpointing_steps 200 \

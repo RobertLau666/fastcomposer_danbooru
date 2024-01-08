@@ -24,8 +24,9 @@ DEMO_NAME_GENDERS=(
 # )
 
 
+
 CKPTS=(
-    [0]="115000"
+    [0]="5800"
 )
 # CKPTS=(
 #     [0]="90000"
@@ -91,7 +92,7 @@ POSE_FOLDER='pose_512_768'
 #     [9]="020_run/000140007_pose.jpg"
 # )
 POSES=(
-    [0]="001_xxx/pose.png"
+    [0]="001_stand/pose.png"
 )
 
 
@@ -114,15 +115,15 @@ for (( i="$demo_name_gender_start_id"; i<${#DEMO_NAME_GENDERS[@]}; i++ )); do
                 SAVE_POSE=$(echo "$POSE" | sed 's/\// /g')
                 echo "DEMO_NAME:${DEMO_NAME} GENDER:${GENDER} CKPT:${CKPT} NEW_CAPTION:${NEW_CAPTION} POSE_FOLDER:${POSE_FOLDER} POSE:${POSE}"
 
-                CUDA_VISIBLE_DEVICES=0 accelerate launch \
-                    --config_file /nas40/chenyu.liu/cache/huggingface/accelerate/second_config.yaml \
+                CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
+                    --config_file /dfs/comicai/chenyu.liu/cache/huggingface/accelerate/default_config.yaml \
                     --mixed_precision=fp16 \
                     fastcomposer/inference_controlnet.py \
-                    --pretrained_model_name_or_path /nas40/chenyu.liu/Models/anything-v3.0 \
-                    --finetuned_model_path /nas40/chenyu.liu/fastcomposer_release_danbooru/fastcomposer-main/models_blip2_captions/anything-v3.0/danbooru/postfuse-localize-danbooru-1_5-1e-5/checkpoint-${CKPT} \
+                    --pretrained_model_name_or_path /dfs/comicai/chenyu.liu/Models/Linaqruf_anything-v3.0 \
+                    --finetuned_model_path /dfs/comicai/chenyu.liu/fastcomposer_danbooru/models_blip2_captions/Linaqruf_anything-v3.0/MGC/postfuse-localize-danbooru-1_5-1e-5/checkpoint-${CKPT} \
                     --test_reference_folder data/${DEMO_NAME} \
                     --test_caption "${NEW_CAPTION}" \
-                    --pose_image_path /nas40/chenyu.liu/Datasets/pose/"${POSE_FOLDER}"/"${POSE}" \
+                    --pose_image_path /dfs/comicai/chenyu.liu/fastcomposer_danbooru/pose/"${POSE_FOLDER}"/"${POSE}" \
                     --output_dir outputs/${DEMO_NAME}/${CKPT}/"${NEW_CAPTION}"/"${SAVE_POSE}" \
                     --mixed_precision fp16 \
                     --image_encoder_type clip \

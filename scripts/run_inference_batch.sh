@@ -2,14 +2,14 @@
 DEMO_NAME_GENDERS=(
     [0]="role1 girl"
     [1]="role2 girl"
-    [2]="role3 girl"
-    [3]="role4 girl"
-    [4]="role5 girl"
-    [5]="role6 boy"
-    [6]="role7 boy"
-    [7]="role8 boy"
-    [8]="role9 boy"
-    [9]="role10 boy"
+    # [2]="role3 girl"
+    # [3]="role4 girl"
+    # [4]="role5 girl"
+    # [5]="role6 boy"
+    # [6]="role7 boy"
+    # [7]="role8 boy"
+    # [8]="role9 boy"
+    # [9]="role10 boy"
 )
 # DEMO_NAME_GENDERS=(
 #     [0]="Nahida girl"
@@ -24,8 +24,12 @@ DEMO_NAME_GENDERS=(
 # )
 
 
+# CKPTS=(
+#     [0]="115000"
+#     [0]="225000"
+# )
 CKPTS=(
-    [0]="220000"
+    [0]="5800"
 )
 # CKPTS=(
 #     [0]="105000"
@@ -67,10 +71,10 @@ CKPTS=(
 CAPTIONS=(
     [0]="a GENDER <|image|>, solo, sitting in the classroom"
     [1]="a GENDER <|image|>, solo, standing in the library"
-    [2]="a GENDER <|image|>, solo, lying on the bed"
-    [3]="a GENDER <|image|>, solo, running in the gym"
-    [4]="a GENDER <|image|>, solo, holding flower in a forest with trees"
-    [5]="a GENDER <|image|>, solo, victory pose, on the stage"
+    # [2]="a GENDER <|image|>, solo, lying on the bed"
+    # [3]="a GENDER <|image|>, solo, running in the gym"
+    # [4]="a GENDER <|image|>, solo, holding flower in a forest with trees"
+    # [5]="a GENDER <|image|>, solo, victory pose, on the stage"
 )
 # CAPTIONS=(
 #     [0]="a GENDER <|image|> is reading book"
@@ -96,13 +100,13 @@ for (( i="$demo_name_gender_start_id"; i<${#DEMO_NAME_GENDERS[@]}; i++ )); do
             
             echo "DEMO_NAME:${DEMO_NAME} GENDER:${GENDER} CKPT:${CKPT} NEW_CAPTION:${NEW_CAPTION}"
 
-            CUDA_VISIBLE_DEVICES=0 accelerate launch \
-                --config_file /oss/comicai/chenyu.liu/cache/huggingface/accelerate/second_config.yaml \
+            CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
+                --config_file /dfs/comicai/chenyu.liu/cache/huggingface/accelerate/default_config.yaml \
                 --mixed_precision=fp16 \
                 fastcomposer/inference.py \
-                --pretrained_model_name_or_path /oss/comicai/chenyu.liu/Models/anything-v3.0 \
-                --finetuned_model_path /oss/comicai/chenyu.liu/fastcomposer_release_danbooru/fastcomposer-main/models_blip2_captions/anything-v3.0/danbooru/postfuse-localize-danbooru-1_5-1e-5/checkpoint-${CKPT} \
-                --test_reference_folder /oss/comicai/chenyu.liu/Datasets/person/${DEMO_NAME} \
+                --pretrained_model_name_or_path /dfs/comicai/chenyu.liu/Models/Linaqruf_anything-v3.0 \
+                --finetuned_model_path /dfs/comicai/chenyu.liu/fastcomposer_danbooru/models_blip2_captions/Linaqruf_anything-v3.0/MGC/postfuse-localize-danbooru-1_5-1e-5/checkpoint-${CKPT} \
+                --test_reference_folder data/${DEMO_NAME} \
                 --test_caption "${NEW_CAPTION}" \
                 --output_dir outputs/${DEMO_NAME}/${CKPT}/"${NEW_CAPTION}" \
                 --mixed_precision fp16 \
@@ -111,7 +115,7 @@ for (( i="$demo_name_gender_start_id"; i<${#DEMO_NAME_GENDERS[@]}; i++ )); do
                 --num_image_tokens 1 \
                 --max_num_objects 2 \
                 --object_resolution 224 \
-                --generate_height 288 \
+                --generate_height 768 \
                 --generate_width 512 \
                 --num_images_per_prompt 4 \
                 --num_rows 1 \

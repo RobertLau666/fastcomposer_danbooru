@@ -81,7 +81,8 @@ def main():
     ckpt_name = "pytorch_model.bin"
 
     model.load_state_dict(
-        torch.load(Path(args.finetuned_model_path) / ckpt_name, map_location="cpu")
+        torch.load(Path(args.finetuned_model_path) / ckpt_name, map_location="cpu"),
+        strict=False
     )
 
     model = model.to(device=accelerator.device, dtype=weight_dtype)

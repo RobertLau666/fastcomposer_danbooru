@@ -1,28 +1,43 @@
-The project is based on [FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention](https://github.com/mit-han-lab/fastcomposer), training dataset use danbooru dataset, prompt use the prompt generated from the danbooru dataset detected by BLIP2 model
+The project is based on [FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention](https://github.com/mit-han-lab/fastcomposer), training dataset use MGC dataset, prompt use the prompt generated from the MGC dataset detected by BLIP2 model
 
 ## Preparing Database
-1. Prepare a folder "train_fastcomposer_data_336k_pre_release_danbooru_" for storing data, the data storage format is as follows:
+1. Prepare a folder "MGC" in any path for storing data, the data storage format is as follows:
 ```
-| train_fastcomposer_data_336k_pre_release_danbooru_/
-|---- 00000/
-|---- image_ids_train.txt
+| MGC/
+|---- 00000/ (use this folder in training process)
+|-------- 10000_blip2_captions.json
+|-------- 10000.jpg
+|-------- 10000.npy
+|---- mask_/
+|-------- 10000/
+|------------ 10000_seg_mask/
+|---------------- 10000.png
+|------------ 10000_sub_seg/
+|---------------- 10000.png
+|---- image_ids_train.txt (use this file in training process)
+        '10000'
+        '10002'
+        '10003'
 ```
-2. Run generate_blip2_captions_danbooru_.py, the generated file "blip2_captions_danbooru_336k_.json" is used in step 3.
-3. Run file_process_.ipynb的"instantbooth/data_336k_pre数据处理（for release）"的"生成xxxxxxx_blip2_captions.json文件"
+2. Run "MGC data preprocess" in file_process_.ipynb
 
 ## Revise
-1. Revise run_training.sh
+1. Revise scripts/run_training.sh
 ```
+--config_file /dfs/comicai/chenyu.liu/cache/huggingface/accelerate/default_config.yaml \
 --logging_dir logs_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
 --output_dir models_blip2_captions/${MODEL}/${DATASET_NAME}/${WANDB_NAME} \
 --train_batch_size 12 \
---keep_interval 5000 \ #10000 每隔5k step保存一次
+--keep_interval 10000 \
 ```
-2. Revise data.py
-Change the "##" in both places ".json" to "blip2 captions.json"
+2. Revise fastcomposer/data.py
+Change the "##" in two places ".json" to "_blip2_captions.json"
+3. Revise default_config.yaml
+Comment out "debug: false"
 
 ## Train
 ```
+export PYTHONPATH=$(pwd):$PYTHONPATH
 bash scripts/run_training.sh
 ```
 
@@ -33,7 +48,7 @@ bash scripts/run_inference_batch.sh
 ```
 
 ## Show
-Run fastcomposer/show_ckpt_img_.ipynb
+Run "Test for "DEMO_NAME CKPT CAPTION"" in fastcomposer/show_ckpt_img_.ipynb
 
 ## + ControlNet
 1. Revise utils.py: 
@@ -63,4 +78,4 @@ bash run_inference_batch_controlnet.sh
 ```
 
 ## Show
-Run fastcomposer/show_ckpt_img_.ipynb
+Run "Test for "DEMO_NAME CKPT CAPTION POSE" in fastcomposer/show_ckpt_img_.ipynb

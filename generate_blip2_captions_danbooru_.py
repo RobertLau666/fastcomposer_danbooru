@@ -8,16 +8,17 @@ from tqdm import tqdm
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-processor = Blip2Processor.from_pretrained("Salesforce/blip2-opt-6.7b-coco")
+processor = Blip2Processor.from_pretrained("/dfs/comicai/chenyu.liu/Models/Salesforce_blip2-opt-6.7b-coco")
 model = Blip2ForConditionalGeneration.from_pretrained(
-    "Salesforce/blip2-opt-6.7b-coco", torch_dtype=torch.float16
+    "/dfs/comicai/chenyu.liu/Models/Salesforce_blip2-opt-6.7b-coco", torch_dtype=torch.float16
 )
 model.to(device)
 
 # root_path = "/nas40/chenyu.liu/fastcomposer_release_danbooru/fastcomposer-main/data/train_fastcomposer_data_336k_pre_release_danbooru_/00000"
-root_path = "/nas40/chenyu.liu/Datasets/Genshin/Albedo/orig"
+# root_path = "/nas40/chenyu.liu/Datasets/Genshin/Albedo/orig"
+root_path = "/dfs/comicai/chenyu.liu/Datasets/MGC/00000/"
 captions={}
-dir_or_files = os.listdir(root_path) # 只有文件或文件夹的名称，没有前面的目录名称
+dir_or_files = os.listdir(root_path)
 dir_or_files = [x for x in dir_or_files if x not in [".ipynb_checkpoints", ".DS_Store"] and '.png' in x] # 删除所有特定元素
 dir_or_files = sorted(dir_or_files)
 for dir_file in tqdm(dir_or_files):
@@ -31,7 +32,7 @@ for dir_file in tqdm(dir_or_files):
     # print(dir_file, generated_text)
     
 json_str = json.dumps(captions, indent=4)
-with open('/nas40/chenyu.liu/Datasets/instantbooth/blip2_captions_danbooru_336k_.json', 'w') as f:
+with open('/dfs/comicai/chenyu.liu/Datasets/MGC/blip2_captions_MGC_1916_batch_.json', 'w') as f:
     # f.write(json_str)
     lines = json_str.split('\n')
     for line in lines:

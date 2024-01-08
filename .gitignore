@@ -6,3 +6,7 @@ models_blip2_captions/
 models_danbooru_tags/
 outputs/
 wandb/
+build/
+dist/
+fastcomposer.egg-info/
+__pycache__/
