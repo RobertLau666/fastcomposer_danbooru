@@ -159,6 +159,7 @@ typing-inspect==0.9.0
 typing_extensions==4.8.0
 tzdata==2023.3
 urllib3 @ file:///croot/urllib3_1698257533958/work
+wandb==0.16.1
 uvicorn==0.24.0.post1
 wcwidth @ file:///home/conda/feedstock_root/build_artifacts/wcwidth_1700607916581/work
 websockets==11.0.3
