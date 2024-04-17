@@ -92,7 +92,9 @@ bash run_inference_batch_controlnet.sh
 Run "Test for "DEMO_NAME CKPT CAPTION POSE" in fastcomposer/show_ckpt_img_.ipynb
 
 ## CKPT
-Before this, we also followed the above process to train the 336k danbooru dataset, and finally got a good ckpt, you can download it [here](https://www.alipan.com/s/dtxdo84in49). Its result display is as below:
+Before this, we also followed the above process to train the 336k danbooru dataset, and finally got a good ckpt, you can download it [here](https://www.alipan.com/s/dtxdo84in49), note that revise "num_hidden_layers" to "11" in loaded model anythingv3 path "Linaqruf_anything-v3.0/text_encoder/config.json"
+
+Its result display is as below:
 
 Number of train images: 336k
 
