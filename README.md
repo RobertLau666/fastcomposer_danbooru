@@ -1,3 +1,4 @@
+# fastcomposer_danbooru
 The project is based on [FastComposer: Tuning-Free Multi-Subject Image Generation with Localized Attention](https://github.com/mit-han-lab/fastcomposer), training dataset use MGC dataset, prompt use the prompt generated from the MGC dataset detected by BLIP2 model.
 
 ## Environment Setup
@@ -92,7 +93,7 @@ bash run_inference_batch_controlnet.sh
 Run "Test for "DEMO_NAME CKPT CAPTION POSE" in fastcomposer/show_ckpt_img_.ipynb
 
 ## CKPT
-Before this, we also followed the above process to train the 336k danbooru dataset, and finally got a good ckpt, you can download it [here](https://www.alipan.com/s/dtxdo84in49), note that revise "num_hidden_layers" to "11" in loaded model anythingv3 path "Linaqruf_anything-v3.0/text_encoder/config.json"
+Before this, we also followed the above process to train the 336k danbooru dataset, and finally got a good ckpt, you can download it from [huggingface](https://huggingface.co/RobertLau/fastcomposer_danbooru) or [alipan](https://www.alipan.com/s/dtxdo84in49), note that revise "num_hidden_layers" to "11" in loaded model anythingv3 path "Linaqruf_anything-v3.0/text_encoder/config.json"
 
 Its result display is as below:
 
