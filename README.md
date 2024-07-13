@@ -102,8 +102,8 @@ Number of train images: 336k
 Number of time of the train images: 52.36
 
 prompt: "a GENDER <|image|> is reading book"
-| input_image | GENDER | output_images (ckpt: 220k) | output_images (ckpt: 115k) ![2](pose/pose_512_768/001_stand/pose.png) | 
+| input_image | GENDER | output_images (ckpt: 115k) ![2](pose/pose_512_768/001_stand/pose.png)  | output_images (ckpt: 220k) | 
 | ------- | ------- | ------- |  ------- | 
-| ![Nahida](data/Nahida/Nahida/0.png)      | girl | ![2](figures/result_images/0_result_image.png)   | ![2](figures/result_images/Nahida_controlnet_pose_stand.png)    | 
-| ![6002903](data/6002903/6002903/0.png)   | girl | ![4](figures/result_images/1_result_image.png)   | ![4](figures/result_images/6002903_controlnet_pose_stand.png)   |
-| ![Elsa](data/Elsa/Elsa/0.png)            | girl | ![6](figures/result_images/2_result_image.png)   | ![6](figures/result_images/Elsa_controlnet_pose_stand.png)      |
+| ![Nahida](data/Nahida/Nahida/0.png)      | girl | ![2](figures/result_images/Nahida_controlnet_pose_stand.png)   | ![2](figures/result_images/0_result_image.png)    | 
+| ![6002903](data/6002903/6002903/0.png)   | girl | ![4](figures/result_images/6002903_controlnet_pose_stand.png)   | ![4](figures/result_images/1_result_image.png)   |
+| ![Elsa](data/Elsa/Elsa/0.png)            | girl | ![6](figures/result_images/Elsa_controlnet_pose_stand.png)   | ![6](figures/result_images/2_result_image.png)      |
