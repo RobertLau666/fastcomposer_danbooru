@@ -3,7 +3,7 @@ The project is based on [FastComposer: Tuning-Free Multi-Subject Image Generatio
 
 ## Environment Setup
 ```
-conda create -n fastcomposer python
+conda create -n fastcomposer python=3.10
 conda activate fastcomposer
 pip install torch torchvision torchaudio
 pip install transformers==4.25.1 accelerate datasets evaluate diffusers==0.16.1 xformers triton scipy clip gradio facenet-pytorch
