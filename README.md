@@ -31,7 +31,10 @@ You can also refer to the file 'fastcomposer_requirements.txt', which is the ver
         '10002'
         '10003'
 ```
-2. Run "MGC data preprocess" in file_process_.ipynb
+2. Run "MGC data preprocess" in file_process_.ipynb, or 
+```
+python file_process_.py
+```
 
 ## Revise
 1. Revise scripts/run_training.sh
