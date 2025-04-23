@@ -21,9 +21,10 @@ import shutil
 
 
 def prepare_images():
+    print("1")
     if not os.path.exists(image_save_dir):
         os.makedirs(image_save_dir, exist_ok=True)
-
+    print("2")
     wb = openpyxl.load_workbook(xlsx_path)
     ws = wb["Sheet1"]
 
@@ -327,7 +328,7 @@ if __name__ == "__main__":
     Salesforce_blip2_opt_67b_coco_model_path = "/data/code/chenyu.liu/Models/Salesforce_blip2-opt-6.7b-coco"
     skytnt_anime_seg_isnetis_onnx_model_path = "/data/code/chenyu.liu/Models/skytnt_anime-seg/isnetis.onnx"
 
-    # 1. 准备数据 
+    # 1. 准备数据
     prepare_images()
 
     # 2. 生成xxxxxxx_blip2_captions.json文件
