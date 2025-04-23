@@ -18,13 +18,12 @@ import csv
 import onnxruntime as rt
 import numpy as np
 import shutil
+import time
 
 
 def prepare_images():
-    print("1")
     if not os.path.exists(image_save_dir):
         os.makedirs(image_save_dir, exist_ok=True)
-    print("2")
     wb = openpyxl.load_workbook(xlsx_path)
     ws = wb["Sheet1"]
 
@@ -41,6 +40,7 @@ def prepare_images():
     while True:
         image_name = str(ws.cell(row=r, column=image_name_index).value)
         image_url = ws.cell(row=r, column=image_url_index).value
+        r += 1
 
         if not image_name or not image_url:
             break
@@ -50,8 +50,7 @@ def prepare_images():
             continue
         
         loaded_image = load_image(image_url)
-        loaded_image.save(image_save_path)
-        r += 1
+        loaded_image.save(image_save_path, "JPEG")
 
     image_names = os.listdir(image_save_dir)
     print('len(image_names): ', len(image_names))
@@ -106,6 +105,16 @@ def load_image(url):
                 break
     return img
 
+def is_valid_image(image_path):
+    try:
+        with Image.open(image_path) as img:
+            img.verify()  # 验证图像完整性
+            img.convert("RGB")  # 确保是 RGB 模式
+        return True
+    except Exception as e:
+        print(f"Invalid image: {image_path}, error: {e}")
+        return False
+
 def generate_blip2_captions_danbooru_():
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -119,15 +128,20 @@ def generate_blip2_captions_danbooru_():
     captions = {}
     # image_names = [image_name for image_name in image_names if image_name not in [".ipynb_checkpoints", ".DS_Store"] and '.png' in x] # 删除所有特定元素
     image_names = sorted(os.listdir(image_save_dir))
+    # import pdb;pdb.set_trace()
     for image_name in tqdm(image_names):
         file_name = image_name.split('.')[0]
         image_name_path = os.path.join(image_save_dir, image_name)
+        print("image_name_path: ", image_name_path)
+        # if not is_valid_image(image_name_path):
+        #     continue  # 跳过无效图像
         raw_image = Image.open(image_name_path)
         inputs = processor(images=raw_image, return_tensors="pt").to(device, torch.float16)
         generated_ids = model.generate(**inputs)
+        print("generated_ids: ", generated_ids)
         generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
         captions[file_name]= [generated_text]
-        # print(image_name, generated_text)
+        print("image_name, generated_text: ", image_name, generated_text)
         
     json_str = json.dumps(captions, indent=4)
     with open(blip2_captions_MGC_1916_batch_json_path, 'w') as f:
@@ -212,7 +226,7 @@ def generate_image_json():
             json.dump(role_info, f)
             f.write('\n')
 
-def get_mask(img, s=1024):
+def get_mask(rmbg_model, img, s=1024):
     img = (img / 255).astype(np.float32)
     h, w = h0, w0 = img.shape[:-1]
     h, w = (s, int(s * w / h)) if h > w else (int(s * h / w), s)
@@ -227,8 +241,8 @@ def get_mask(img, s=1024):
     mask = cv2.resize(mask, (w0, h0))[:, :, np.newaxis]
     return mask
 
-def rmbg_fn(img):
-    mask = get_mask(img)
+def rmbg_fn(rmbg_model, img):
+    mask = get_mask(rmbg_model, img)
     # img = (mask * img + 255 * (1 - mask)).astype(np.uint8)
     img = (mask * img).astype(np.uint8)
     mask = (mask * 255).astype(np.uint8)
@@ -261,7 +275,7 @@ def generate_mask_image():
         input_img_path = os.path.join(image_save_dir, role_pic)
         # print("input_img_path: ", input_img_path)
         input_img = cv2.imread(input_img_path)
-        output_mask, output_img = rmbg_fn(input_img)
+        output_mask, output_img = rmbg_fn(rmbg_model, input_img)
         role_pic_name = role_pic.split('.')[0]
         
         seg_mask_dir = os.path.join(target_data_336k_pre_mask_root_dir, role_pic_name, role_pic_name+'_seg_mask', role_pic_name)
