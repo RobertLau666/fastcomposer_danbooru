@@ -57,7 +57,8 @@ def prepare_images():
     # image_names = [image_name for image_name in image_names if image_name not in [".ipynb_checkpoints", ".DS_Store"] and f'.{image_save_postfix}' in image_name]
     
     for image_name in image_names:
-        if (image_name in [".ipynb_checkpoints", ".DS_Store"] or f'.{image_save_postfix}' not in image_name):
+        # if (image_name in [".ipynb_checkpoints", ".DS_Store"] or f'.{image_save_postfix}' not in image_name):
+        if (image_name in [".ipynb_checkpoints", ".DS_Store"]):
             try:
                 image_path = os.path.join(image_save_dir, image_name)
                 os.remove(image_path)
@@ -137,6 +138,7 @@ def generate_blip2_captions_danbooru_():
         #     continue  # 跳过无效图像
         raw_image = Image.open(image_name_path)
         inputs = processor(images=raw_image, return_tensors="pt").to(device, torch.float16)
+        print("inputs: ", inputs)
         generated_ids = model.generate(**inputs)
         print("generated_ids: ", generated_ids)
         generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
